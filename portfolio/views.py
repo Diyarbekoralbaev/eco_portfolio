@@ -10,10 +10,10 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 class PortfolioView(APIView):
     parser_classes = [MultiPartParser, FormParser]
-    def get_permissions(self):
-        if self.request.method == 'POST':
-            return [permissions.IsAuthenticated()]
-        return [permissions.AllowAny()]
+    # def get_permissions(self):
+    #     if self.request.method == 'POST':
+    #         return [permissions.IsAuthenticated()]
+    #     return [permissions.AllowAny()]
 
     @swagger_auto_schema(
         request_body=PortfolioSerializer,
@@ -101,10 +101,10 @@ class PortfolioDetailView(APIView):
 
 
 class CategoryView(APIView):
-    def get_permissions(self):
-        if self.request.method == 'POST':
-            return [permissions.IsAuthenticated()]
-        return [permissions.AllowAny()]
+    # def get_permissions(self):
+    #     if self.request.method == 'POST':
+    #         return [permissions.IsAuthenticated()]
+    #     return [permissions.AllowAny()]
 
     @swagger_auto_schema(
         request_body=CategorySerializer,
@@ -139,10 +139,10 @@ class CategoryView(APIView):
 
 
 class CategoryDetailView(APIView):
-    def get_permissions(self):
-        if self.request.method in ['PUT', 'DELETE']:
-            return [permissions.IsAuthenticated()]
-        return [permissions.AllowAny()]
+    # def get_permissions(self):
+    #     if self.request.method in ['PUT', 'DELETE']:
+    #         return [permissions.IsAuthenticated()]
+    #     return [permissions.AllowAny()]
 
     @swagger_auto_schema(
         responses={
