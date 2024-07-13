@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from .models import PortfolioModel
+from .models import PortfolioModel, CategoryModel
 
 
 class PortfolioSerializer(serializers.ModelSerializer):
     class Meta:
         model = PortfolioModel
-        fields = ('id', 'name', 'description', 'image', 'link', 'demo_video', 'team')
+        fields = ('id', 'name', 'description', 'image', 'link', 'demo_video', 'team', 'category', 'created_at', 'updated_at')
         extra_kwargs = {
             'id': {'read_only': True},
             'name': {'required': True},
@@ -14,6 +14,9 @@ class PortfolioSerializer(serializers.ModelSerializer):
             'link': {'required': True},
             'demo_video': {'required': True},
             'team': {'required': True},
+            'category': {'required': True},
+            'created_at': {'read_only': True},
+            'updated_at': {'read_only': True},
         }
 
     def validate_image(self, value):
@@ -46,5 +49,25 @@ class PortfolioSerializer(serializers.ModelSerializer):
         instance.link = validated_data.get('link', instance.link)
         instance.demo_video = validated_data.get('demo_video', instance.demo_video)
         instance.team = validated_data.get('team', instance.team)
+        instance.category = validated_data.get('category', instance.category)
+        instance.save()
+        return instance
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategoryModel
+        fields = ('id', 'name')
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'name': {'required': True},
+        }
+
+    def create(self, validated_data):
+        category = CategoryModel.objects.create(**validated_data)
+        return category
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
         instance.save()
         return instance

@@ -123,8 +123,22 @@ class RefreshTokenView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TeamCreateView(APIView):
-    permission_classes = (permissions.AllowAny,)
+class TeamView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    @swagger_auto_schema(
+        responses={
+            200: openapi.Response(
+                'Teams retrieved successfully.',
+                ResponseTeamSerializer,
+            ),
+        },
+        tags=['teams'],
+    )
+    def get(self, request):
+        teams = TeamModel.objects.all()
+        serializer = ResponseTeamSerializer(teams, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         request_body=TeamSerializer,
@@ -144,26 +158,24 @@ class TeamCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TeamListView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-
+class TeamDetailView(APIView):
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return permissions.AllowAny(),
+        return permissions.IsAuthenticated(),
     @swagger_auto_schema(
         responses={
             200: openapi.Response(
-                'Teams retrieved successfully.',
+                'Team details retrieved successfully.',
                 ResponseTeamSerializer,
             ),
         },
         tags=['teams'],
     )
-    def get(self, request):
-        teams = TeamModel.objects.filter(members=request.user)
-        serializer = ResponseTeamSerializer(teams, many=True)
+    def get(self, request, team_id):
+        team = TeamModel.objects.get(id=team_id)
+        serializer = ResponseTeamSerializer(team)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class TeamUpdateView(APIView):
-    permission_classes = (permissions.AllowAny,)
 
     @swagger_auto_schema(
         request_body=UpdateTeamSerializer,
@@ -175,34 +187,29 @@ class TeamUpdateView(APIView):
         },
         tags=['teams'],
     )
-    def put(self, request):
-        team = TeamModel.objects.get(id=request.data['team_id'])
+    def put(self, request, team_id):
+        team = TeamModel.objects.get(id=team_id)
         serializer = UpdateTeamSerializer(team, data=request.data)
         if serializer.is_valid():
-            team = TeamModel.objects.get(id=request.data['team_id'])
-            team.name = request.data['name']
-            team.save()
-            response = ResponseTeamSerializer(team)
-            return Response(response.data, status=status.HTTP_200_OK)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class TeamDeleteView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
 
     @swagger_auto_schema(
         request_body=DeleteTeamSerializer,
         responses={
-            204: openapi.Response(
+            200: openapi.Response(
                 'Team deleted successfully.',
+                ResponseTeamSerializer,
             ),
         },
         tags=['teams'],
     )
-    def delete(self, request):
-        team = TeamModel.objects.get(id=request.data['team_id'])
+    def delete(self, request, team_id):
+        team = TeamModel.objects.get(id=team_id)
         team.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = ResponseTeamSerializer(team)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class TeamAddMemberView(APIView):
@@ -243,23 +250,5 @@ class TeamRemoveMemberView(APIView):
         team = TeamModel.objects.get(id=request.data['team_id'])
         user = UserModel.objects.get(id=request.data['user_id'])
         team.members.remove(user)
-        serializer = ResponseTeamSerializer(team)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class TeamDetailView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-
-    @swagger_auto_schema(
-        responses={
-            200: openapi.Response(
-                'Team details retrieved successfully.',
-                ResponseTeamSerializer,
-            ),
-        },
-        tags=['teams'],
-    )
-    def get(self, request, team_id):
-        team = TeamModel.objects.get(id=team_id)
         serializer = ResponseTeamSerializer(team)
         return Response(serializer.data, status=status.HTTP_200_OK)

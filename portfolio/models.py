@@ -9,5 +9,10 @@ class PortfolioModel(models.Model):
     link = models.URLField()
     demo_video = models.URLField()
     team = models.ForeignKey(TeamModel, on_delete=models.CASCADE, related_name='portfolio')
+    category = models.ForeignKey('CategoryModel', on_delete=models.CASCADE, related_name='portfolio')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+
+
+class CategoryModel(models.Model):
+    name = models.CharField(max_length=255, db_index=True)

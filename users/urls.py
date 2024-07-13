@@ -1,7 +1,6 @@
 from django.urls import path
 from .views import RegisterUserView, UsersListView, RefreshTokenView, UserMeView, UserDetailView, LoginView, \
-    TeamListView, TeamAddMemberView, TeamUpdateView, TeamRemoveMemberView, TeamDetailView, TeamDeleteView, \
-    TeamCreateView
+    TeamView, TeamAddMemberView, TeamRemoveMemberView, TeamDetailView
 
 urlpatterns = [
     path('register/', RegisterUserView.as_view(), name='register'),
@@ -11,11 +10,8 @@ urlpatterns = [
     path('users/', UsersListView.as_view(), name='users-list'),
     path('user/<int:user_id>/', UserDetailView.as_view(), name='user-detail'),
 
-    path('teams/', TeamListView.as_view(), name='teams-list'),
-    path('teams/create/', TeamCreateView.as_view(), name='teams-create'),
-    path('teams/<int:team_id>/', TeamDetailView.as_view(), name='teams-detail'),
-    path('teams/update/', TeamUpdateView.as_view(), name='teams-update'),
-    path('teams/delete/', TeamDeleteView.as_view(), name='teams-delete'),
-    path('teams/add-member/', TeamAddMemberView.as_view(), name='teams-add-member'),
-    path('teams/remove-member/', TeamRemoveMemberView.as_view(), name='teams-remove-member'),
+    path('teams/', TeamView.as_view(), name='teams'),
+    path('team/<int:team_id>/', TeamDetailView.as_view(), name='team-detail'),
+    path('team/<int:team_id>/add-member/', TeamAddMemberView.as_view(), name='team-add-member'),
+    path('team/<int:team_id>/remove-member/', TeamRemoveMemberView.as_view(), name='team-remove-member'),
 ]
