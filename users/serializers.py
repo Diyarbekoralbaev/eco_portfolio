@@ -8,7 +8,7 @@ from .models import UserModel, TeamModel
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'password' 'phone_number', 'telegram', 'role', 'skills')
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'password', 'phone_number', 'telegram', 'role', 'skills')
         extra_kwargs = {
             'id': {'read_only': True},
             'username': {'required': True},
@@ -57,7 +57,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ResponseUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'phone_number', 'telegram', 'role', 'skills')
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'password', 'phone_number', 'telegram', 'role', 'skills')
 
 
 class LoginSerializer(serializers.Serializer):
