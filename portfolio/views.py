@@ -5,9 +5,11 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .models import PortfolioModel, CategoryModel
 from .serializers import PortfolioSerializer, CategorySerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class PortfolioView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
     def get_permissions(self):
         if self.request.method == 'POST':
             return [permissions.IsAuthenticated()]
@@ -46,6 +48,7 @@ class PortfolioView(APIView):
 
 
 class PortfolioDetailView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
     # def get_permissions(self):
     #     if self.request.method in ['PUT', 'DELETE']:
     #         return [permissions.IsAuthenticated()]
