@@ -1,20 +1,21 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
-
+import re
 from .models import UserModel, TeamModel
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'phone_number', 'telegram', 'role', 'skills')
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'password' 'phone_number', 'telegram', 'role', 'skills')
         extra_kwargs = {
             'id': {'read_only': True},
             'username': {'required': True},
             'first_name': {'required': False},
             'last_name': {'required': False},
             'email': {'required': True},
+            'password': {'write_only': True},
             'phone_number': {'required': False},
             'telegram': {'required': False},
             'role': {'required': False},
@@ -29,6 +30,19 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_username(self, value):
         if UserModel.objects.filter(username=value).exists():
             raise serializers.ValidationError('This username is already taken.')
+        return value
+
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError('Password must be at least 8 characters long.')
+        if not re.search(r'[A-Z]', value):
+            raise serializers.ValidationError('Password must contain at least one uppercase letter.')
+        if not re.search(r'[a-z]', value):
+            raise serializers.ValidationError('Password must contain at least one lowercase letter.')
+        if not re.search(r'[0-9]', value):
+            raise serializers.ValidationError('Password must contain at least one digit.')
+        if not re.search(r'[.!@#$%^&*()_+=-]', value):
+            raise serializers.ValidationError('Password must contain at least one special character.')
         return value
 
     def validate(self, data):

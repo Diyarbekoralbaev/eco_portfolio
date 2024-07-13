@@ -46,10 +46,10 @@ class PortfolioView(APIView):
 
 
 class PortfolioDetailView(APIView):
-    def get_permissions(self):
-        if self.request.method in ['PUT', 'DELETE']:
-            return [permissions.IsAuthenticated()]
-        return [permissions.AllowAny()]
+    # def get_permissions(self):
+    #     if self.request.method in ['PUT', 'DELETE']:
+    #         return [permissions.IsAuthenticated()]
+    #     return [permissions.AllowAny()]
 
     @swagger_auto_schema(
         responses={
