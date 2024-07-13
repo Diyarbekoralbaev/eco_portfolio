@@ -19,11 +19,6 @@ class PortfolioSerializer(serializers.ModelSerializer):
             'updated_at': {'read_only': True},
         }
 
-    def validate_image(self, value):
-        if value.size > 5 * 1024 * 1024:
-            raise serializers.ValidationError('Image size is too large.')
-        return value
-
     def validate_link(self, value):
         if not value.startswith('http://') and not value.startswith('https://'):
             raise serializers.ValidationError('Invalid link.')
