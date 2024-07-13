@@ -12,6 +12,7 @@ schema_view = get_schema_view(
         default_version='v1',
         description="An API for an AI marketplace",
     ),
+    url='https://ecoapi.araltech.tech/',
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
